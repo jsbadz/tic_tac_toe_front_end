@@ -10,10 +10,10 @@ const axiosClient = axios.create({
 });
 
 // Generic request wrapper
-export const useRequest = async <T = any>(
+export const UseRequest = async <T = unknown, TData = unknown>(
   method: Method,
   url: string,
-  data?: any,
+  data?: TData,
   config?: AxiosRequestConfig
 ): Promise<T> => {
   try {
@@ -24,8 +24,12 @@ export const useRequest = async <T = any>(
       ...config,
     });
     return response.data;
-  } catch (error: any) {
-    console.error("Axios request error:", error.response || error.message);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error("Axios request error:", error.response || error.message);
+    } else {
+      console.error("Unexpected error:", error);
+    }
     throw error;
   }
 };

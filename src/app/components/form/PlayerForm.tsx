@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { useRecoilState } from "recoil";
 
 interface PlayerFormProps {
   onSubmit: (playerOne: string, playerTwo: string) => void;

@@ -1,12 +1,29 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Squares } from "@/app/types/board";
-import calculateWinner from "@/app/hooks/useWinner";
+import { calculateWinner } from "@/app/hooks/useWinner";
 import { useRouter } from "next/navigation";
 import { usePlayerStore } from "../config/useCommonZustandState";
-import { useRequest } from "../config/useAxiosClient";
-import { useApiUrl } from "../config/useAPI";
-import { log } from "console";
+import { UseRequest } from "../config/useAxiosClient";
+
+export interface Round {
+  roundNumber: number;
+  winner: string | null;
+  moves: string[];
+}
+
+export interface Player {
+  name: string;
+  symbol: "X" | "O";
+}
+
+export interface Session {
+  _id: number;
+  playerOne: Player;
+  playerTwo: Player;
+  rounds: Round[];
+  status: string;
+}
 
 export const useGame = (sessionId?: string) => {
   const [squares, setSquares] = useState<Squares>(Array(9).fill(null));
@@ -62,24 +79,28 @@ export const useGame = (sessionId?: string) => {
 
     try {
       // 1️⃣ Add this round and mark game as stopped
-      await useRequest("put", `/update/${sessionId}`, {
+      await UseRequest("put", `/update/${sessionId}`, {
         $push: { rounds: roundResult },
         status: "stopped",
       });
 
       // 2️⃣ Fetch the updated session
-      const currentSession = await useRequest("get", `/update/${sessionId}`, {
-        status: "stopped",
-      });
+      const currentSession = await UseRequest<Session>(
+        "get",
+        `/update/${sessionId}`,
+        {
+          status: "stopped",
+        }
+      );
 
       const { rounds } = currentSession;
 
       // 3️⃣ Helper to count wins, losses, draws
       const countWins = (playerName: string) =>
-        rounds.filter((r: any) => r.winner === playerName).length;
+        rounds.filter((r: Round) => r.winner === playerName).length;
 
       const countDraws = () =>
-        rounds.filter((r: any) => r.winner === null).length;
+        rounds.filter((r: Round) => r.winner === null).length;
 
       const playerOneWins = countWins(playerOne.name);
       const playerTwoWins = countWins(playerTwo.name);
@@ -102,7 +123,7 @@ export const useGame = (sessionId?: string) => {
       };
 
       // 5️⃣ Update stats in the database
-      await useRequest("put", `/update/${sessionId}`, updatedStats);
+      await UseRequest("put", `/update/${sessionId}`, updatedStats);
 
       console.log("Game stopped. Current session stats:", {
         currentSession,
@@ -133,7 +154,7 @@ export const useGame = (sessionId?: string) => {
     };
 
     try {
-      await useRequest("put", `/update/${sessionId}`, {
+      await UseRequest("put", `/update/${sessionId}`, {
         $push: { rounds: roundResult },
       });
 

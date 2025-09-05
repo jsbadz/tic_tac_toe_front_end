@@ -1,6 +1,6 @@
 import { Squares } from "@/app/types/board";
 
-export default (square: Squares): string | null => {
+export const calculateWinner = (square: Squares): string | null => {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],

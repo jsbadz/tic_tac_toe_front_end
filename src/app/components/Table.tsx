@@ -1,7 +1,5 @@
 "use client";
 
-import Button from "./Button";
-
 interface PlayerStats {
   wins: number;
   losses: number;
@@ -23,7 +21,7 @@ interface PlayerStatsMap {
   [playerName: string]: PlayerStats;
 }
 
-interface RecordType {
+export interface RecordType {
   _id: number;
   playerOne: Player;
   playerTwo: Player;

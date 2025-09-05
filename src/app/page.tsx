@@ -1,25 +1,23 @@
 "use client";
 import Button from "./components/Button";
 import { useRouter } from "next/navigation";
-import Record from "./components/Table";
+import Record, { RecordType } from "./components/Table";
 import Popup from "@/app/components/Popup";
 import { useState, useEffect } from "react";
-import { useApiUrl } from "@/app/config/useAPI";
-import { useRequest } from "@/app/config/useAxiosClient";
+import { UseRequest } from "@/app/config/useAxiosClient";
 import { usePlayerStore } from "./config/useCommonZustandState";
+import { Session } from "./hooks/useGame";
 
 export default function Page() {
   const router = useRouter();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<RecordType[]>([]);
   const { setPlayers } = usePlayerStore();
-  const [playerOne, setPlayerOne] = useState("");
-  const [playerTwo, setPlayerTwo] = useState("");
 
   useEffect(() => {
     async function fetchSessions() {
       try {
-        const response = await useRequest("get", `/`);
+        const response = await UseRequest<RecordType[]>("get", `/`);
         setSessions(response);
       } catch (error) {
         console.error("Error fetching sessions:", { error });
@@ -36,7 +34,7 @@ export default function Page() {
         playerOne,
         playerTwo,
       };
-      const response = await useRequest("post", `/post`, payload);
+      const response = await UseRequest<Session>("post", `/post`, payload);
       setPlayers(playerOne, playerTwo);
       setIsPopupOpen(false);
 
