@@ -39,43 +39,51 @@ interface Props {
 
 const GameStatusPreviousGame = ({ record }: Props) => {
   return (
-    <div className="overflow-x-auto  text-xl font-bold">
-      <div className="p-3 text-2xl font-bold flex flex-col items-center justify-center gap-6">
-        <div className="text-5xl">Leader Board</div>
+    <div className="overflow-x-auto text-lg sm:text-xl font-bold p-4">
+      <div className="flex flex-col items-center justify-center gap-6">
+        <div className="text-3xl sm:text-5xl font-bold text-center">
+          Leader Board
+        </div>
 
-        <div className="grid grid-cols-4 gap-6 w-[30rem] text-center text-2xl w-[40rem]">
+        {/* Table Header */}
+        <div className="grid grid-cols-4 gap-4 sm:gap-6 w-full max-w-4xl text-center text-base sm:text-2xl font-semibold">
           <div>Player One</div>
           <div>Player Two</div>
           <div>Round</div>
           <div>Draw</div>
         </div>
-        <div className="overflow-x-auto flex flex-col gap-6 max-h-[22rem] scrollbar-none">
+
+        {/* Table Rows */}
+        <div className="flex flex-col gap-4 w-full max-w-4xl overflow-y-auto max-h-[28rem] sm:max-h-[22rem]">
           {record?.map((data: RecordType) => (
             <div
               key={data._id}
-              className="flex flex-col items-center justify-center w-[40rem] "
+              className="grid grid-cols-4 gap-4 sm:gap-6 text-white text-center"
             >
-              <div className="grid grid-row-4 gap-4 w-full">
-                <div className="rounded-2xl border-none w-full w-full flex flex-row gap-4 text-white text-center">
-                  <div className="w-full bg-indigo-600 rounded-lg p-4 shadow-xl/30 w-fit">
-                    <div> {data.playerOne?.name}</div>
-                    <div>
-                      Score: {data.playerStats[data.playerOne.name].wins}
-                    </div>
-                  </div>
-                  <div className="w-full bg-indigo-600 rounded-lg p-4 shadow-xl/30">
-                    <div> {data.playerTwo?.name}</div>
-                    <div>
-                      Score: {data.playerStats[data.playerTwo.name].wins}
-                    </div>
-                  </div>
-                  <div className="w-full bg-pink-500 rounded-lg p-4 shadow-xl/30 flex items-center justify-center">
-                    <div>{data?.rounds?.length}</div>
-                  </div>
-                  <div className="w-full bg-cyan-500 rounded-lg p-4 shadow-xl/30 flex items-center justify-center">
-                    <div>{data.playerStats[data.playerTwo.name].draws}</div>
-                  </div>
+              {/* Player One */}
+              <div className="bg-indigo-600 rounded-lg p-2 sm:p-4 shadow-lg flex flex-col items-center justify-center">
+                <div className="truncate">{data.playerOne?.name}</div>
+                <div className="font-semibold">
+                  Score: {data.playerStats[data.playerOne.name].wins}
                 </div>
+              </div>
+
+              {/* Player Two */}
+              <div className="bg-indigo-600 rounded-lg p-2 sm:p-4 shadow-lg flex flex-col items-center justify-center">
+                <div className="truncate">{data.playerTwo?.name}</div>
+                <div className="font-semibold">
+                  Score: {data.playerStats[data.playerTwo.name].wins}
+                </div>
+              </div>
+
+              {/* Rounds */}
+              <div className="bg-pink-500 rounded-lg p-2 sm:p-4 shadow-lg flex items-center justify-center font-semibold">
+                {data?.rounds?.length}
+              </div>
+
+              {/* Draws */}
+              <div className="bg-cyan-500 rounded-lg p-2 sm:p-4 shadow-lg flex items-center justify-center font-semibold">
+                {data.playerStats[data.playerTwo.name].draws}
               </div>
             </div>
           ))}
