@@ -54,7 +54,7 @@ const GameStatusPreviousGame = ({ record }: Props) => {
         </div>
 
         {/* Table Rows */}
-        <div className="flex flex-col gap-4 w-full max-w-4xl overflow-y-auto max-h-[28rem] sm:max-h-[22rem]">
+        <div className="flex flex-col gap-4 w-full max-w-4xl overflow-y-auto max-h-[28rem] sm:max-h-[22rem] scrollbar-none">
           {record?.map((data: RecordType) => (
             <div
               key={data._id}
