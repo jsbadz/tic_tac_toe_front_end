@@ -1,103 +1,77 @@
-import Image from "next/image";
+"use client";
+import Button from "./components/Button";
+import { useRouter } from "next/navigation";
+import Record from "./components/Table";
+import Popup from "@/app/components/Popup";
+import { useState, useEffect } from "react";
+import { useApiUrl } from "@/app/config/useAPI";
+import { useRequest } from "@/app/config/useAxiosClient";
+import { usePlayerStore } from "./config/useCommonZustandState";
 
-export default function Home() {
+export default function Page() {
+  const router = useRouter();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const { setPlayers } = usePlayerStore();
+  const [playerOne, setPlayerOne] = useState("");
+  const [playerTwo, setPlayerTwo] = useState("");
+
+  useEffect(() => {
+    async function fetchSessions() {
+      try {
+        const response = await useRequest("get", `/`);
+        setSessions(response);
+      } catch (error) {
+        console.error("Error fetching sessions:", { error });
+      }
+    }
+    fetchSessions();
+  }, []);
+
+  console.log("Fetched sessions:", { sessions });
+
+  const handlePlayersSubmit = async (playerOne: string, playerTwo: string) => {
+    try {
+      const payload = {
+        playerOne,
+        playerTwo,
+      };
+      const response = await useRequest("post", `/post`, payload);
+      setPlayers(playerOne, playerTwo);
+      setIsPopupOpen(false);
+
+      console.log("✅ Players chosen:", playerOne, playerTwo);
+
+      router.push(`/pages/${response._id}`);
+    } catch (error) {
+      console.error("Error creating session:", error);
+    }
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-dvh flex items-center justify-center p-6">
+      <div className="flex w-full max-w-3xl flex-col items-center justify-center gap-6">
+        <Record record={sessions} />
+        <div className="border-none w-full items-center justify-center flex text-3xl">
+          <Button
+            value={"Start New Game"}
+            className="animate-bounce bg-indigo-600 text-[2rem] w-auto px-6 py-3 rounded-2xl hover:bg-indigo-800 shadow-xl/50"
+            onClick={() => setIsPopupOpen(true)}
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <div className="hidden sm:mb-8 sm:flex sm:justify-center">
+          <div className="relative rounded-full px-3 py-1 text-sm/6 text-gray-400 ring-1 ring-white/10 hover:ring-white/20">
+            Power by Next.js + Tailwind + TypeScript + custom hook + Espress.js
+            + Node.js ❤️
+          </div>
+        </div>
+        <Popup
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+          onSubmitPlayers={handlePlayersSubmit}
+        />
+      </div>
+    </main>
   );
 }
