@@ -11,7 +11,7 @@ const PlayerForm = ({ onSubmit }: PlayerFormProps) => {
 
   const handleSubmit = () => {
     if (!playerOne || !playerTwo) {
-      alert("Please enter both players");
+      alert("Please enter a player name for both players.");
       return;
     }
     onSubmit(playerOne, playerTwo);
