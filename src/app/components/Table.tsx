@@ -24,13 +24,13 @@ interface Props {
 
 const GameStatusPreviousGame = ({ record }: Props) => {
   return (
-    <div className="text-lg sm:text-xl font-bold p-4">
+    <div className="text-lg sm:text-xl font-bold p-4 w-full md:max-w-lg">
       <div className="flex flex-col items-center justify-center gap-6">
         <div className="text-3xl sm:text-5xl font-bold text-center">
           Leader Board
         </div>
 
-        <div className="mx-auto max-w-md md:max-w-2xl overflow-hidden rounded-xl bg-inherit">
+        <div className="max-w-md md:max-w-2xl overflow-hidden rounded-xl bg-inherit w-full ">
           {/* Scrollable container with spacing */}
           <div className="max-h-96 overflow-y-auto scrollbar-none space-y-4 p-4">
             {record?.map((data: RecordType) => (
