@@ -1,50 +1,12 @@
 "use client";
 import Button from "./components/Button";
-import { useRouter } from "next/navigation";
-import Record, { RecordType } from "./components/Table";
+import Record from "./components/Table";
 import Popup from "@/app/components/Popup";
-import { useState, useEffect } from "react";
-import { UseRequest } from "@/app/config/useAxiosClient";
-import { usePlayerStore } from "./config/useCommonZustandState";
-import { Session } from "./hooks/useGame";
+import { useRecordSession } from "./hooks/useRecordSession";
 
 export default function Page() {
-  const router = useRouter();
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [sessions, setSessions] = useState<RecordType[]>([]);
-  const { setPlayers } = usePlayerStore();
-
-  useEffect(() => {
-    async function fetchSessions() {
-      try {
-        const response = await UseRequest<RecordType[]>("get", `/`);
-        setSessions(response);
-      } catch (error) {
-        console.error("Error fetching sessions:", { error });
-      }
-    }
-    fetchSessions();
-  }, []);
-
-  console.log("Fetched sessions:", { sessions });
-
-  const handlePlayersSubmit = async (playerOne: string, playerTwo: string) => {
-    try {
-      const payload = {
-        playerOne,
-        playerTwo,
-      };
-      const response = await UseRequest<Session>("post", `/post`, payload);
-      setPlayers(playerOne, playerTwo);
-      setIsPopupOpen(false);
-
-      console.log("✅ Players chosen:", playerOne, playerTwo);
-
-      router.push(`/pages/${response._id}`);
-    } catch (error) {
-      console.error("Error creating session:", error);
-    }
-  };
+  const { isPopupOpen, setIsPopupOpen, sessions, handlePlayersSubmit } =
+    useRecordSession();
 
   return (
     <main className="min-h-dvh flex items-center justify-center p-6">

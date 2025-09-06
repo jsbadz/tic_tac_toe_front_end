@@ -3,27 +3,12 @@ import { useState } from "react";
 import { Squares } from "@/app/types/board";
 import { calculateWinner } from "@/app/hooks/useWinner";
 import { useRouter } from "next/navigation";
-import { usePlayerStore } from "../config/useCommonZustandState";
+import {
+  Round,
+  Session,
+  usePlayerStore,
+} from "../config/useCommonZustandState";
 import { UseRequest } from "../config/useAxiosClient";
-
-export interface Round {
-  roundNumber: number;
-  winner: string | null;
-  moves: string[];
-}
-
-export interface Player {
-  name: string;
-  symbol: "X" | "O";
-}
-
-export interface Session {
-  _id: number;
-  playerOne: Player;
-  playerTwo: Player;
-  rounds: Round[];
-  status: string;
-}
 
 export const useGame = (sessionId?: string) => {
   const [squares, setSquares] = useState<Squares>(Array(9).fill(null));
@@ -37,15 +22,6 @@ export const useGame = (sessionId?: string) => {
       : winnerSymbol === "O"
       ? playerTwo.name
       : null;
-  // const status = winnerName
-  //   ? `Winner: ${winnerName}`
-  //   : squares.every(Boolean)
-  //   ? "Draw!"
-  //   : `Player: ${
-  //       xIsNext
-  //         ? `${playerOne.name} (${playerOne.symbol})`
-  //         : `${playerTwo.name} (${playerTwo.symbol})`
-  //     }`;
 
   const status = winnerName
     ? `Winner: ${winnerName}`
@@ -97,10 +73,10 @@ export const useGame = (sessionId?: string) => {
 
       // 3️⃣ Helper to count wins, losses, draws
       const countWins = (playerName: string) =>
-        rounds.filter((r: Round) => r.winner === playerName).length;
+        rounds.filter((round: Round) => round.winner === playerName).length;
 
       const countDraws = () =>
-        rounds.filter((r: Round) => r.winner === null).length;
+        rounds.filter((round: Round) => round.winner === null).length;
 
       const playerOneWins = countWins(playerOne.name);
       const playerTwoWins = countWins(playerTwo.name);
@@ -124,11 +100,6 @@ export const useGame = (sessionId?: string) => {
 
       // 5️⃣ Update stats in the database
       await UseRequest("put", `/update/${sessionId}`, updatedStats);
-
-      console.log("Game stopped. Current session stats:", {
-        currentSession,
-        updatedStats,
-      });
 
       // 6️⃣ Redirect home
       router.push("/");

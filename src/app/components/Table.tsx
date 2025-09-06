@@ -1,21 +1,6 @@
 "use client";
 
-interface PlayerStats {
-  wins: number;
-  losses: number;
-  draws: number;
-}
-
-interface Rounds {
-  recordNumber: number;
-  winner: string | null;
-  moves: string[];
-}
-
-interface Player {
-  name: string;
-  symbol: "X" | "O";
-}
+import { Player, PlayerStats, Round } from "../config/useCommonZustandState";
 
 interface PlayerStatsMap {
   [playerName: string]: PlayerStats;
@@ -25,7 +10,7 @@ export interface RecordType {
   _id: number;
   playerOne: Player;
   playerTwo: Player;
-  rounds: Rounds[];
+  rounds: Round[];
   playerStats: PlayerStatsMap;
   status: "active" | "stopped" | "draw";
   createdAt: string;
@@ -61,7 +46,7 @@ const GameStatusPreviousGame = ({ record }: Props) => {
               className="grid grid-cols-4 gap-4 sm:gap-6 text-white text-center"
             >
               {/* Player One */}
-              <div className="bg-indigo-600 rounded-lg p-2 sm:p-4 shadow-lg flex flex-col items-center justify-center">
+              <div className="bg-indigo-600 rounded-lg p- sm:p-4 shadow-lg flex flex-col items-center justify-center">
                 <div className="truncate">{data.playerOne?.name}</div>
                 <div className="font-semibold">
                   Score: {data.playerStats[data.playerOne.name].wins}
