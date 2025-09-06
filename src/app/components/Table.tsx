@@ -24,54 +24,45 @@ interface Props {
 
 const GameStatusPreviousGame = ({ record }: Props) => {
   return (
-    <div className="overflow-x-auto text-lg sm:text-xl font-bold p-4">
+    <div className="text-lg sm:text-xl font-bold p-4">
       <div className="flex flex-col items-center justify-center gap-6">
         <div className="text-3xl sm:text-5xl font-bold text-center">
           Leader Board
         </div>
 
-        {/* Table Header */}
-        <div className="grid grid-cols-4 gap-4 sm:gap-6 w-full max-w-4xl text-center text-base sm:text-2xl font-semibold">
-          <div>Player One</div>
-          <div>Player Two</div>
-          <div>Round</div>
-          <div>Draw</div>
-        </div>
-
-        {/* Table Rows */}
-        <div className="flex flex-col gap-4 w-full max-w-4xl overflow-y-auto max-h-[28rem] sm:max-h-[22rem] scrollbar-none">
-          {record?.map((data: RecordType) => (
-            <div
-              key={data._id}
-              className="grid grid-cols-4 gap-4 sm:gap-6 text-white text-center"
-            >
-              {/* Player One */}
-              <div className="bg-indigo-600 rounded-lg p- sm:p-4 shadow-lg flex flex-col items-center justify-center">
-                <div className="truncate">{data.playerOne?.name}</div>
-                <div className="font-semibold">
-                  Score: {data.playerStats[data.playerOne.name].wins}
+        <div className="mx-auto max-w-md md:max-w-2xl overflow-hidden rounded-xl bg-inherit">
+          {/* Scrollable container with spacing */}
+          <div className="max-h-96 overflow-y-auto scrollbar-none space-y-4 p-4">
+            {record?.map((data: RecordType) => (
+              <div
+                key={data._id}
+                className="md:flex rounded-lg bg-white shadow-sm overflow-hidden"
+              >
+                <div className="md:shrink-0">
+                  <div className="h-25 w-full md:h-full md:w-30 flex items-center justify-center bg-indigo-600 text-white text-4xl font-bold">
+                    X/O
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="font-bold tracking-wide text-indigo-500 uppercase">
+                    Round Finish: 10
+                  </div>
+                  <p className="mt-2 text-pink-500 flex">
+                    {data.playerOne?.name}:{" "}
+                    <span className="ml-2 text-shadow-lg">
+                      {data.playerStats[data.playerOne.name].wins}
+                    </span>
+                  </p>
+                  <p className="mt-2 text-cyan-500 flex">
+                    {data.playerTwo?.name}:{" "}
+                    <span className="ml-2 text-shadow-lg">
+                      {data.playerStats[data.playerTwo.name].wins}
+                    </span>
+                  </p>
                 </div>
               </div>
-
-              {/* Player Two */}
-              <div className="bg-indigo-600 rounded-lg p-2 sm:p-4 shadow-lg flex flex-col items-center justify-center">
-                <div className="truncate">{data.playerTwo?.name}</div>
-                <div className="font-semibold">
-                  Score: {data.playerStats[data.playerTwo.name].wins}
-                </div>
-              </div>
-
-              {/* Rounds */}
-              <div className="bg-pink-500 rounded-lg p-2 sm:p-4 shadow-lg flex items-center justify-center font-semibold">
-                {data?.rounds?.length}
-              </div>
-
-              {/* Draws */}
-              <div className="bg-cyan-500 rounded-lg p-2 sm:p-4 shadow-lg flex items-center justify-center font-semibold">
-                {data.playerStats[data.playerTwo.name].draws}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
